@@ -2,6 +2,8 @@ package pe.incubadora.backend.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -72,6 +74,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleIntegrityViolation(DataIntegrityViolationException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new ApiErrorResponse("RESOURCE_IN_USE", "No se pudo completar la operacion por integridad de datos"));
+    }
+
+    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidDataAccess(InvalidDataAccessApiUsageException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(new ApiErrorResponse("BAD_REQUEST", "El campo sort no es válido"));
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ResponseEntity<ApiErrorResponse> handlePropertyReference(PropertyReferenceException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(new ApiErrorResponse("BAD_REQUEST", "El campo sort no es válido"));
     }
 
     /**

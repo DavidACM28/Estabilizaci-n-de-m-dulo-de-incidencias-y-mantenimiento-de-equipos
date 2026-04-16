@@ -5,6 +5,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pe.incubadora.backend.config.AppJwtProperties;
 import pe.incubadora.backend.dto.auth.LoginRequest;
 import pe.incubadora.backend.dto.auth.LoginResponse;
@@ -40,6 +41,7 @@ public class AuthService {
      * @return token JWT, tiempo de expiracion y datos basicos del usuario autenticado
      * @throws NotFoundException si el usuario autenticado ya no existe en la base de datos
      */
+    @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.email(), request.password())
