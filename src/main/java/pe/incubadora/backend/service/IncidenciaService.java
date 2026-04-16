@@ -96,9 +96,6 @@ public class IncidenciaService {
      */
     @Transactional(readOnly = true)
     public IncidenciaResponse findById(Long id) {
-        if (securityUtils.hasAnyRole(Role.SEDE)) {
-            return incidenciaMapper.toResponse(getEntity(id));
-        }
         return incidenciaMapper.toResponse(getVisibleEntity(id));
     }
 
