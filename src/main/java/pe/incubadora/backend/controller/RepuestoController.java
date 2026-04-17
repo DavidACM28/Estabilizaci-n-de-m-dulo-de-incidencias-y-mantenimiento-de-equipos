@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pe.incubadora.backend.dto.repuesto.RepuestoRequest;
 import pe.incubadora.backend.dto.repuesto.RepuestoResponse;
-import pe.incubadora.backend.entity.Repuesto;
 import pe.incubadora.backend.service.RepuestoService;
 
 /**
@@ -62,8 +61,8 @@ public class RepuestoController {
      */
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','OPERACIONES')")
-    public Repuesto findById(@PathVariable Long id) {
-        return repuestoService.getEntity(id);
+    public RepuestoResponse findById(@PathVariable Long id) {
+        return repuestoService.findById(id);
     }
 
     /**

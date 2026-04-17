@@ -90,3 +90,17 @@
 - **Regla de negocio afectada:** la API debe responder errores en formato uniforme con la estructura `{ code, message }`.
 - **Causa encontrada:** `OrdenTrabajoController.findById()` manejaba errores manualmente en el controlador en vez de delegarlos al `GlobalExceptionHandler`.
 - **Solución aplicada:** se eliminó el `try/catch` manual y el endpoint quedó devolviendo directamente `OrdenTrabajoResponse`, dejando que los errores reales se traduzcan mediante el manejador global con el contrato uniforme.
+
+## 14. El detalle de repuestos devolvía la entidad en lugar del DTO
+
+- **Síntoma observado:** el endpoint `GET /repuestos/{id}` respondía con la entidad JPA `Repuesto` en lugar de mantener el mismo contrato DTO usado por el resto del módulo.
+- **Regla de negocio afectada:** los endpoints públicos del laboratorio deben respetar un contrato de respuesta consistente.
+- **Causa encontrada:** `RepuestoController.findById()` devolvía `Repuesto` y llamaba directamente a `repuestoService.getEntity(id)`, saltándose el DTO de salida disponible en el servicio.
+- **Solución aplicada:** se cambió `RepuestoController.findById()` para devolver `RepuestoResponse` usando `repuestoService.findById(id)`.
+
+## 15. El detalle de sedes devolvía la entidad en lugar del DTO
+
+- **Síntoma observado:** el endpoint `GET /sedes/{id}` respondía con la entidad JPA `Sede` en lugar de devolver el DTO consistente del módulo.
+- **Regla de negocio afectada:** los endpoints públicos del laboratorio deben respetar un contrato de respuesta consistente.
+- **Causa encontrada:** `SedeController.findById()` devolvía `Sede` y llamaba directamente a `sedeService.getVisibleEntity(id)`, en vez de usar el DTO ya expuesto por el servicio.
+- **Solución aplicada:** se cambió `SedeController.findById()` para devolver `SedeResponse` usando `sedeService.findById(id)`.

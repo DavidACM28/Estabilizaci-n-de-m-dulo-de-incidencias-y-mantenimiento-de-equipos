@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pe.incubadora.backend.dto.sede.SedeRequest;
 import pe.incubadora.backend.dto.sede.SedeResponse;
-import pe.incubadora.backend.entity.Sede;
 import pe.incubadora.backend.service.SedeService;
 
 /**
@@ -60,8 +59,8 @@ public class SedeController {
      */
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','OPERACIONES','SEDE')")
-    public Sede findById(@PathVariable Long id) {
-        return sedeService.getVisibleEntity(id);
+    public SedeResponse findById(@PathVariable Long id) {
+        return sedeService.findById(id);
     }
 
     /**
