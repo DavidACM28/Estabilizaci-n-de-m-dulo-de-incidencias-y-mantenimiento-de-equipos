@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -112,10 +111,6 @@ public class RepuestoController {
     public Page<RepuestoResponse> findLowStock(@RequestParam(required = false) String search,
                                                @RequestParam(required = false) Boolean activo,
                                                @PageableDefault(sort = "stockActual", direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<RepuestoResponse> page = repuestoService.findAll(search, activo, null, pageable);
-        var filtered = page.getContent().stream()
-                .filter(repuesto -> repuesto.stockActual() < repuesto.stockMinimo())
-                .toList();
-        return new PageImpl<>(filtered, pageable, filtered.size());
+        return repuestoService.findAll(search, activo, true, pageable);
     }
 }

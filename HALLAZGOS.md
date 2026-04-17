@@ -104,3 +104,10 @@
 - **Regla de negocio afectada:** los endpoints públicos del laboratorio deben respetar un contrato de respuesta consistente.
 - **Causa encontrada:** `SedeController.findById()` devolvía `Sede` y llamaba directamente a `sedeService.getVisibleEntity(id)`, en vez de usar el DTO ya expuesto por el servicio.
 - **Solución aplicada:** se cambió `SedeController.findById()` para devolver `SedeResponse` usando `sedeService.findById(id)`.
+
+## 16. El endpoint de stock bajo aplicaba mal la regla y rompía la paginación
+
+- **Síntoma observado:** el endpoint de stock bajo podía devolver resultados incompletos o inconsistentes y además no seguía exactamente la regla de negocio para identificar repuestos con stock bajo.
+- **Regla de negocio afectada:** un repuesto está en stock bajo cuando `stockActual <= stockMinimo`.
+- **Causa encontrada:** `RepuestoController.findLowStock()` obtenía una página general de repuestos y luego filtraba en memoria con la condición `stockActual < stockMinimo`, usando una comparación incorrecta y aplicando el filtro después de paginar.
+- **Solución aplicada:** se eliminó el filtrado en memoria del controlador y se delegó directamente a `repuestoService.findAll(..., true, pageable)`, reutilizando la consulta que ya aplica `stockActual <= stockMinimo` desde la capa de servicio con paginación consistente.
