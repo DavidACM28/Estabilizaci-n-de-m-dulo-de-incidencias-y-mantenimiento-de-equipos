@@ -27,3 +27,10 @@
 - **Regla de negocio afectada:** no se debe permitir registrar incidencias para equipos en estado `DE_BAJA`, `FUERA_SERVICIO` o con `activo = false`.
 - **Causa encontrada:** en `IncidenciaService.create()` solo se validaba `activo = false`, pero no se controlaban los estados `FUERA_SERVICIO` ni `DE_BAJA`.
 - **Solución aplicada:** se agregó una validación adicional en `IncidenciaService.create()` para rechazar la creación de incidencias cuando el equipo se encuentre en estado `FUERA_SERVICIO` o `DE_BAJA`, además del caso `activo = false`.
+
+## 5. Se permitían incidencias activas duplicadas para el mismo equipo y tipo
+
+- **Síntoma observado:** el sistema permitía registrar una nueva incidencia para el mismo equipo y tipo aunque ya existiera otra incidencia activa en curso.
+- **Regla de negocio afectada:** no debe permitirse crear incidencias activas duplicadas para el mismo equipo y el mismo tipo.
+- **Causa encontrada:** en `IncidenciaService.create()` la validación de duplicidad solo consideraba algunos estados iniciales del flujo, por lo que dejaba pasar duplicados cuando la incidencia previa seguía activa en estados posteriores.
+- **Solución aplicada:** se amplió la validación para considerar como incidencias activas los estados `REGISTRADA`, `EN_REVISION`, `APROBADA` y `EN_ATENCION`, evitando duplicados mientras la incidencia siga abierta en el flujo operativo.

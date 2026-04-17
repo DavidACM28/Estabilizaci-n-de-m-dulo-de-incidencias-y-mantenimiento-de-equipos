@@ -1,6 +1,7 @@
 package pe.incubadora.backend.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -125,7 +126,12 @@ public class IncidenciaService {
         if (incidenciaRepository.existsByEquipoIdAndTipoAndEstadoIn(
                 equipo.getId(),
                 request.tipo(),
-                java.util.List.of(EstadoIncidencia.REGISTRADA, EstadoIncidencia.EN_REVISION)
+                List.of(
+                        EstadoIncidencia.REGISTRADA,
+                        EstadoIncidencia.EN_REVISION,
+                        EstadoIncidencia.APROBADA,
+                        EstadoIncidencia.EN_ATENCION
+                )
         )) {
             throw new ConflictException("INCIDENCIA_DUPLICADA", "Ya existe una incidencia abierta para el mismo equipo y tipo");
         }
