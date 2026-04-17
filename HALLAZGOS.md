@@ -76,3 +76,10 @@
 - **Regla de negocio afectada:** al finalizar una orden, el descuento de repuestos debe ser consistente y el stock no debe quedar en estado parcial si una parte de la operación falla.
 - **Causa encontrada:** `OrdenTrabajoService.finalizeOrder()` no estaba marcado como transaccional y además hacía `saveAndFlush()` sobre repuestos dentro del bucle de consumo, forzando persistencia parcial antes de completar toda la operación.
 - **Solución aplicada:** se marcó `finalizeOrder()` con `@Transactional` y se reemplazó `saveAndFlush()` por `save()`, dejando que todo el proceso se confirme o se revierta como una sola transacción.
+
+## 12. Los conflictos concurrentes de stock se devolvían como error inesperado
+
+- **Síntoma observado:** cuando dos operaciones competían por actualizar el stock del mismo repuesto, la API podía responder con un error genérico en lugar de un conflicto controlado.
+- **Regla de negocio afectada:** si existe conflicto concurrente de stock, la API debe responder con error controlado.
+- **Causa encontrada:** aunque `Repuesto` ya usaba control optimista con `@Version`, el manejador global no traducía las excepciones de optimistic locking a una respuesta funcional de conflicto.
+- **Solución aplicada:** se agregó manejo explícito para `ObjectOptimisticLockingFailureException` y `OptimisticLockException`, devolviendo `409` con el contrato uniforme `{ code, message }` usando el código `STOCK_CONFLICT`.
