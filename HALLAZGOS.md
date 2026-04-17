@@ -13,3 +13,10 @@
 - **Regla de negocio afectada:** `SEDE` solo debe ver incidencias asociadas a su propia sede.
 - **Causa encontrada:** en `IncidenciaService.findById()` se hacía una excepción para el rol `SEDE` y se usaba `getEntity(id)` en lugar de `getVisibleEntity(id)`, saltándose la validación de visibilidad por sede.
 - **Solución aplicada:** se eliminó el bypass para `SEDE` y se dejó `findById()` usando siempre `getVisibleEntity(id)`, de modo que toda consulta por ID pase por la validación de acceso correspondiente.
+
+## 3. Usuario de sede podía consultar órdenes de otra sede por ID
+
+- **Síntoma observado:** un usuario con rol `SEDE` podía acceder al detalle de una orden de trabajo de otra sede si consultaba directamente el identificador.
+- **Regla de negocio afectada:** `SEDE` solo debe ver órdenes asociadas a su propia sede.
+- **Causa encontrada:** en `OrdenTrabajoService.findById()` se hacía una excepción para el rol `SEDE` y se usaba `getEntity(id)` en lugar de `getVisibleEntity(id)`, evitando la validación de visibilidad por sede.
+- **Solución aplicada:** se eliminó el bypass para `SEDE` y se dejó `findById()` usando siempre `getVisibleEntity(id)`, de forma que la validación de acceso se aplique en todas las consultas por identificador.

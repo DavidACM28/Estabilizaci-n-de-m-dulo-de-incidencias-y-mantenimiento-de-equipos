@@ -118,7 +118,7 @@ public class OrdenTrabajoService {
      */
     @Transactional(readOnly = true)
     public OrdenTrabajoResponse findById(Long id) {
-        OrdenTrabajo ordenTrabajo = securityUtils.hasAnyRole(Role.SEDE) ? getEntity(id) : getVisibleEntity(id);
+        OrdenTrabajo ordenTrabajo = getVisibleEntity(id);
         return ordenTrabajoMapper.toResponse(ordenTrabajo, ordenTrabajoRepuestoRepository.findByOrdenTrabajoId(id));
     }
 
