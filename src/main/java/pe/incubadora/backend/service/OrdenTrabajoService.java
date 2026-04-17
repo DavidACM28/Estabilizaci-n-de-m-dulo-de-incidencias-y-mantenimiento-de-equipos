@@ -243,8 +243,8 @@ public class OrdenTrabajoService {
      */
     public OrdenTrabajoResponse finalizeOrder(Long id, OrdenTrabajoFinalizeRequest request) {
         OrdenTrabajo ordenTrabajo = getVisibleEntity(id);
-        if (ordenTrabajo.getEstado() == EstadoOrdenTrabajo.CREADA || ordenTrabajo.getEstado() == EstadoOrdenTrabajo.ASIGNADA) {
-            throw new BusinessException("ORDER_TRANSITION_INVALID", "La orden todavia no esta lista para finalizarse");
+        if (ordenTrabajo.getEstado() != EstadoOrdenTrabajo.EN_PROCESO) {
+            throw new BusinessException("ORDER_TRANSITION_INVALID", "Solo se puede finalizar una orden en estado EN_PROCESO");
         }
         validateTechnicianAction(ordenTrabajo);
         validateDuplicatedRepuestos(request.repuestos());

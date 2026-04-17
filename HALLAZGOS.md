@@ -62,3 +62,10 @@
 - **Regla de negocio afectada:** una orden solo puede iniciarse desde el estado `ASIGNADA`.
 - **Causa encontrada:** en `OrdenTrabajoService.start()` solo se bloqueaba el estado `FINALIZADA`, en lugar de exigir explícitamente el estado `ASIGNADA`.
 - **Solución aplicada:** se cambió la validación de inicio para permitirla únicamente cuando la orden esté en estado `ASIGNADA`.
+
+## 10. Se podían finalizar órdenes fuera del estado en proceso
+
+- **Síntoma observado:** el sistema permitía finalizar una orden aunque no hubiera llegado formalmente al estado `EN_PROCESO`.
+- **Regla de negocio afectada:** una orden solo puede finalizarse desde el estado `EN_PROCESO`.
+- **Causa encontrada:** en `OrdenTrabajoService.finalizeOrder()` solo se bloqueaban los estados `CREADA` y `ASIGNADA`, pero no se exigía explícitamente el estado `EN_PROCESO`.
+- **Solución aplicada:** se cambió la validación de finalización para permitirla únicamente cuando la orden esté en estado `EN_PROCESO`.
