@@ -48,3 +48,10 @@
 - **Regla de negocio afectada:** una orden de trabajo solo puede crearse desde una incidencia en estado `APROBADA`.
 - **Causa encontrada:** en `OrdenTrabajoService.create()` solo se bloqueaban algunos estados inválidos, pero no se exigía explícitamente que la incidencia estuviera en estado `APROBADA`.
 - **Solución aplicada:** se cambió la validación de creación para permitir la orden únicamente cuando la incidencia esté en estado `APROBADA`, devolviendo error en cualquier otro estado.
+
+## 8. Se podían asignar órdenes fuera del estado inicial permitido
+
+- **Síntoma observado:** el sistema permitía asignar una orden de trabajo aunque ya hubiera avanzado en el flujo, siempre que no estuviera finalizada.
+- **Regla de negocio afectada:** una orden solo puede asignarse desde el estado `CREADA`.
+- **Causa encontrada:** en `OrdenTrabajoService.assign()` solo se bloqueaba el estado `FINALIZADA`, en lugar de exigir explícitamente el estado `CREADA`.
+- **Solución aplicada:** se cambió la validación de asignación para permitirla únicamente cuando la orden esté en estado `CREADA`.

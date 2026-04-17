@@ -197,8 +197,8 @@ public class OrdenTrabajoService {
     @Transactional
     public OrdenTrabajoResponse assign(Long id, OrdenTrabajoAssignRequest request) {
         OrdenTrabajo ordenTrabajo = getVisibleEntity(id);
-        if (ordenTrabajo.getEstado() == EstadoOrdenTrabajo.FINALIZADA) {
-            throw new BusinessException("ORDER_TRANSITION_INVALID", "No se puede asignar una orden finalizada");
+        if (ordenTrabajo.getEstado() != EstadoOrdenTrabajo.CREADA) {
+            throw new BusinessException("ORDER_TRANSITION_INVALID", "Solo se puede asignar una orden en estado CREADA");
         }
 
         UserEntity tecnico = userRepository.findById(request.tecnicoId())
