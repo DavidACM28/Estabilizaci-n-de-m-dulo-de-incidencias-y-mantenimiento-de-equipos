@@ -34,3 +34,10 @@
 - **Regla de negocio afectada:** no debe permitirse crear incidencias activas duplicadas para el mismo equipo y el mismo tipo.
 - **Causa encontrada:** en `IncidenciaService.create()` la validación de duplicidad solo consideraba algunos estados iniciales del flujo, por lo que dejaba pasar duplicados cuando la incidencia previa seguía activa en estados posteriores.
 - **Solución aplicada:** se amplió la validación para considerar como incidencias activas los estados `REGISTRADA`, `EN_REVISION`, `APROBADA` y `EN_ATENCION`, evitando duplicados mientras la incidencia siga abierta en el flujo operativo.
+
+## 6. La fecha límite de atención se calculaba mal para prioridades urgentes
+
+- **Síntoma observado:** las incidencias con prioridad `CRITICA` y `ALTA` generaban una `fechaLimiteAtencion` inconsistente respecto a la urgencia esperada.
+- **Regla de negocio afectada:** la `fechaLimiteAtencion` debe calcularse automáticamente según prioridad: `CRITICA` `+4h`, `ALTA` `+8h`, `MEDIA` `+24h`, `BAJA` `+48h`.
+- **Causa encontrada:** en `IncidenciaService.calculateDeadline()` los tiempos de `CRITICA` y `ALTA` estaban invertidos.
+- **Solución aplicada:** se corrigió el cálculo para que `CRITICA` use `+4h` y `ALTA` use `+8h`, manteniendo `MEDIA` y `BAJA` según la regla del negocio.

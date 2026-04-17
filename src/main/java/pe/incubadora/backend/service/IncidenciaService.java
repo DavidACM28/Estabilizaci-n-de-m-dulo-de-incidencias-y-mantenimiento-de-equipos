@@ -314,8 +314,8 @@ public class IncidenciaService {
 
     private LocalDateTime calculateDeadline(LocalDateTime fechaReporte, PrioridadIncidencia prioridad) {
         return switch (prioridad) {
-            case CRITICA -> fechaReporte.plusHours(8);
-            case ALTA -> fechaReporte.plusHours(4);
+            case CRITICA -> fechaReporte.plusHours(4);
+            case ALTA -> fechaReporte.plusHours(8);
             case MEDIA -> fechaReporte.plusHours(24);
             case BAJA -> fechaReporte.plusHours(48);
         };
