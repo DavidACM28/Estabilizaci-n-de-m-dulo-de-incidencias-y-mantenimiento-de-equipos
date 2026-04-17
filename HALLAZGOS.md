@@ -41,3 +41,10 @@
 - **Regla de negocio afectada:** la `fechaLimiteAtencion` debe calcularse automáticamente según prioridad: `CRITICA` `+4h`, `ALTA` `+8h`, `MEDIA` `+24h`, `BAJA` `+48h`.
 - **Causa encontrada:** en `IncidenciaService.calculateDeadline()` los tiempos de `CRITICA` y `ALTA` estaban invertidos.
 - **Solución aplicada:** se corrigió el cálculo para que `CRITICA` use `+4h` y `ALTA` use `+8h`, manteniendo `MEDIA` y `BAJA` según la regla del negocio.
+
+## 7. Se podían crear órdenes desde incidencias en estado inválido
+
+- **Síntoma observado:** el sistema permitía generar órdenes de trabajo desde incidencias que aún no estaban listas para pasar a atención técnica.
+- **Regla de negocio afectada:** una orden de trabajo solo puede crearse desde una incidencia en estado `APROBADA`.
+- **Causa encontrada:** en `OrdenTrabajoService.create()` solo se bloqueaban algunos estados inválidos, pero no se exigía explícitamente que la incidencia estuviera en estado `APROBADA`.
+- **Solución aplicada:** se cambió la validación de creación para permitir la orden únicamente cuando la incidencia esté en estado `APROBADA`, devolviendo error en cualquier otro estado.

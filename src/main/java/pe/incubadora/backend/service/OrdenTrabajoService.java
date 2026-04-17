@@ -134,8 +134,8 @@ public class OrdenTrabajoService {
     @Transactional
     public OrdenTrabajoResponse create(OrdenTrabajoRequest request) {
         Incidencia incidencia = incidenciaService.getEntity(request.incidenciaId());
-        if (incidencia.getEstado() == EstadoIncidencia.RECHAZADA || incidencia.getEstado() == EstadoIncidencia.CERRADA) {
-            throw new BusinessException("ORDER_CREATE_INVALID", "La incidencia no se encuentra disponible para generar una orden");
+        if (incidencia.getEstado() != EstadoIncidencia.APROBADA) {
+            throw new BusinessException("ORDER_CREATE_INVALID", "Solo se puede crear una orden desde una incidencia en estado APROBADA");
         }
         if (ordenTrabajoRepository.existsByIncidenciaId(incidencia.getId())) {
             throw new ConflictException("ORDER_ALREADY_EXISTS", "La incidencia ya tiene una orden de trabajo asociada");
