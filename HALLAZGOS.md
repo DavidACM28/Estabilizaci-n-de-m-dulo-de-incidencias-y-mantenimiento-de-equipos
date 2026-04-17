@@ -20,3 +20,10 @@
 - **Regla de negocio afectada:** `SEDE` solo debe ver órdenes asociadas a su propia sede.
 - **Causa encontrada:** en `OrdenTrabajoService.findById()` se hacía una excepción para el rol `SEDE` y se usaba `getEntity(id)` en lugar de `getVisibleEntity(id)`, evitando la validación de visibilidad por sede.
 - **Solución aplicada:** se eliminó el bypass para `SEDE` y se dejó `findById()` usando siempre `getVisibleEntity(id)`, de forma que la validación de acceso se aplique en todas las consultas por identificador.
+
+## 4. Se podían crear incidencias para equipos no permitidos
+
+- **Síntoma observado:** el sistema permitía registrar incidencias sobre equipos que no debían aceptar nuevas atenciones operativas.
+- **Regla de negocio afectada:** no se debe permitir registrar incidencias para equipos en estado `DE_BAJA`, `FUERA_SERVICIO` o con `activo = false`.
+- **Causa encontrada:** en `IncidenciaService.create()` solo se validaba `activo = false`, pero no se controlaban los estados `FUERA_SERVICIO` ni `DE_BAJA`.
+- **Solución aplicada:** se agregó una validación adicional en `IncidenciaService.create()` para rechazar la creación de incidencias cuando el equipo se encuentre en estado `FUERA_SERVICIO` o `DE_BAJA`, además del caso `activo = false`.

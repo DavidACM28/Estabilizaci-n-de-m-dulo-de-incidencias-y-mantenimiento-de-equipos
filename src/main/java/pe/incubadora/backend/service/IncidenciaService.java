@@ -119,6 +119,9 @@ public class IncidenciaService {
         if (!equipo.isActivo()) {
             throw new BusinessException("EQUIPO_NO_ACTIVO", "No se puede crear una incidencia para un equipo inactivo");
         }
+        if (equipo.getEstado() == EstadoEquipo.FUERA_SERVICIO || equipo.getEstado() == EstadoEquipo.DE_BAJA) {
+            throw new BusinessException("EQUIPO_ESTADO_INVALIDO", "No se puede crear una incidencia para un equipo fuera de servicio o dado de baja");
+        }
         if (incidenciaRepository.existsByEquipoIdAndTipoAndEstadoIn(
                 equipo.getId(),
                 request.tipo(),
