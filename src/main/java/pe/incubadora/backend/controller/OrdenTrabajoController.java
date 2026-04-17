@@ -1,6 +1,5 @@
 package pe.incubadora.backend.controller;
 
-import java.util.Map;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -66,13 +65,8 @@ public class OrdenTrabajoController {
      */
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','OPERACIONES','SEDE','TECNICO')")
-    public ResponseEntity<?> findById(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(ordenTrabajoService.findById(id));
-        } catch (RuntimeException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("status", 404, "detail", "Orden no encontrada"));
-        }
+    public OrdenTrabajoResponse findById(@PathVariable Long id) {
+        return ordenTrabajoService.findById(id);
     }
 
     /**

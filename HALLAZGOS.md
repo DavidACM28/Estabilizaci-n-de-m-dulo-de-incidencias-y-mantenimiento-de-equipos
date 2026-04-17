@@ -83,3 +83,10 @@
 - **Regla de negocio afectada:** si existe conflicto concurrente de stock, la API debe responder con error controlado.
 - **Causa encontrada:** aunque `Repuesto` ya usaba control optimista con `@Version`, el manejador global no traducía las excepciones de optimistic locking a una respuesta funcional de conflicto.
 - **Solución aplicada:** se agregó manejo explícito para `ObjectOptimisticLockingFailureException` y `OptimisticLockException`, devolviendo `409` con el contrato uniforme `{ code, message }` usando el código `STOCK_CONFLICT`.
+
+## 13. El detalle de órdenes devolvía errores con un contrato inconsistente
+
+- **Síntoma observado:** el endpoint `GET /ordenes/{id}` capturaba cualquier `RuntimeException` y respondía con un JSON distinto al contrato estándar, usando campos como `status` y `detail`.
+- **Regla de negocio afectada:** la API debe responder errores en formato uniforme con la estructura `{ code, message }`.
+- **Causa encontrada:** `OrdenTrabajoController.findById()` manejaba errores manualmente en el controlador en vez de delegarlos al `GlobalExceptionHandler`.
+- **Solución aplicada:** se eliminó el `try/catch` manual y el endpoint quedó devolviendo directamente `OrdenTrabajoResponse`, dejando que los errores reales se traduzcan mediante el manejador global con el contrato uniforme.
