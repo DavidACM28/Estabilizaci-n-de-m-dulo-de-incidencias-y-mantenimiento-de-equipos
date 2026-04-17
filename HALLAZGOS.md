@@ -55,3 +55,10 @@
 - **Regla de negocio afectada:** una orden solo puede asignarse desde el estado `CREADA`.
 - **Causa encontrada:** en `OrdenTrabajoService.assign()` solo se bloqueaba el estado `FINALIZADA`, en lugar de exigir explícitamente el estado `CREADA`.
 - **Solución aplicada:** se cambió la validación de asignación para permitirla únicamente cuando la orden esté en estado `CREADA`.
+
+## 9. Se podían iniciar órdenes fuera del estado asignado
+
+- **Síntoma observado:** el sistema permitía iniciar una orden de trabajo aunque no hubiera sido asignada previamente, siempre que no estuviera finalizada.
+- **Regla de negocio afectada:** una orden solo puede iniciarse desde el estado `ASIGNADA`.
+- **Causa encontrada:** en `OrdenTrabajoService.start()` solo se bloqueaba el estado `FINALIZADA`, en lugar de exigir explícitamente el estado `ASIGNADA`.
+- **Solución aplicada:** se cambió la validación de inicio para permitirla únicamente cuando la orden esté en estado `ASIGNADA`.

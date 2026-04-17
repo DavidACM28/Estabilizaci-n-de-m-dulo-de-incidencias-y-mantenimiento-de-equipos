@@ -222,8 +222,8 @@ public class OrdenTrabajoService {
     @Transactional
     public OrdenTrabajoResponse start(Long id) {
         OrdenTrabajo ordenTrabajo = getVisibleEntity(id);
-        if (ordenTrabajo.getEstado() == EstadoOrdenTrabajo.FINALIZADA) {
-            throw new BusinessException("ORDER_TRANSITION_INVALID", "No se puede iniciar una orden finalizada");
+        if (ordenTrabajo.getEstado() != EstadoOrdenTrabajo.ASIGNADA) {
+            throw new BusinessException("ORDER_TRANSITION_INVALID", "Solo se puede iniciar una orden en estado ASIGNADA");
         }
         validateTechnicianAction(ordenTrabajo);
         ordenTrabajo.setEstado(EstadoOrdenTrabajo.EN_PROCESO);
