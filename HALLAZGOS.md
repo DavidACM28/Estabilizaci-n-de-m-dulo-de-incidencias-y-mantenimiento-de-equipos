@@ -69,3 +69,10 @@
 - **Regla de negocio afectada:** una orden solo puede finalizarse desde el estado `EN_PROCESO`.
 - **Causa encontrada:** en `OrdenTrabajoService.finalizeOrder()` solo se bloqueaban los estados `CREADA` y `ASIGNADA`, pero no se exigía explícitamente el estado `EN_PROCESO`.
 - **Solución aplicada:** se cambió la validación de finalización para permitirla únicamente cuando la orden esté en estado `EN_PROCESO`.
+
+## 11. La finalización de órdenes podía dejar stock inconsistente por fallos parciales
+
+- **Síntoma observado:** si ocurría un error durante la finalización de una orden, existía riesgo de que parte del stock de repuestos quedara descontado antes de completar todo el proceso.
+- **Regla de negocio afectada:** al finalizar una orden, el descuento de repuestos debe ser consistente y el stock no debe quedar en estado parcial si una parte de la operación falla.
+- **Causa encontrada:** `OrdenTrabajoService.finalizeOrder()` no estaba marcado como transaccional y además hacía `saveAndFlush()` sobre repuestos dentro del bucle de consumo, forzando persistencia parcial antes de completar toda la operación.
+- **Solución aplicada:** se marcó `finalizeOrder()` con `@Transactional` y se reemplazó `saveAndFlush()` por `save()`, dejando que todo el proceso se confirme o se revierta como una sola transacción.

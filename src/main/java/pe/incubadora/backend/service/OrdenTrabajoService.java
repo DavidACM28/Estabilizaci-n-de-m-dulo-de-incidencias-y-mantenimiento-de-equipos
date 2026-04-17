@@ -241,6 +241,7 @@ public class OrdenTrabajoService {
      * @param request observacion final y lista de repuestos consumidos
      * @return orden finalizada con el detalle de repuestos asociados
      */
+    @Transactional
     public OrdenTrabajoResponse finalizeOrder(Long id, OrdenTrabajoFinalizeRequest request) {
         OrdenTrabajo ordenTrabajo = getVisibleEntity(id);
         if (ordenTrabajo.getEstado() != EstadoOrdenTrabajo.EN_PROCESO) {
@@ -259,7 +260,7 @@ public class OrdenTrabajoService {
                 throw new BusinessException("STOCK_INSUFFICIENT", "Stock insuficiente para completar la orden");
             }
             repuesto.setStockActual(repuesto.getStockActual() - requestedRepuesto.cantidad());
-            repuestoRepository.saveAndFlush(repuesto);
+            repuestoRepository.save(repuesto);
 
             OrdenTrabajoRepuesto ordenTrabajoRepuesto = new OrdenTrabajoRepuesto();
             ordenTrabajoRepuesto.setOrdenTrabajo(ordenTrabajo);
